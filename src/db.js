@@ -1,3 +1,8 @@
-import firebase from "@/firebase";
+import firebase from '@/firebase';
 
-export default firebase.firestore();
+const db = firebase.firestore();
+db.settings({
+  timestampsInSnapshots: true,
+});
+
+export default db;

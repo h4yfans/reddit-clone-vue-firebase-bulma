@@ -18,7 +18,8 @@ const mutations = {
 const actions = {
   async login({ commit }) {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const { user } = await firebase.auth().signInWithPopup(provider);
+    const { user } = await firebase.auth()
+      .signInWithPopup(provider);
 
     const setUser = {
       id: user.uid,
@@ -27,7 +28,9 @@ const actions = {
       created_at: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
-    db.collection('users').add(setUser);
+    db.collection('users')
+      .doc(setUser.id)
+      .set(setUser);
     commit('setUser', setUser);
   },
 };
