@@ -1,12 +1,28 @@
 <template>
-<div>
-Subreddits!
-</div>
+    <aside class="menu">
+        <p class="menu-label">
+            General
+        </p>
+        <ul class="menu-list">
+            <li v-for="subreddit in subreddits" :key="subreddit.id">
+                <router-link
+                        :to="{ name: 'subreddit', params: { name:subreddit.name }} ">
+                    {{ subreddit.name }}
+                </router-link>
+            </li>
+        </ul>
+    </aside>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+
 export default {
-  name: 'Subreddits',
+  mounted() {
+    this.init();
+  },
+  computed: mapState('subreddits', ['subreddits']),
+  methods: mapActions('subreddits', ['init']),
 };
 </script>
 
