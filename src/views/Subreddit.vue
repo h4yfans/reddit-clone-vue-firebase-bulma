@@ -1,16 +1,58 @@
 <template>
-    <h1>{{ $route.params.name }}</h1>
+    <section>
+        <h1>{{ subreddit.name }}</h1>
+        <form @submit.prevent="onCreatePost()">
+            <b-field label="Title">
+                <b-input v-model="post.title" required></b-input>
+            </b-field>
+            <b-field label="Description">
+                <b-input type="textarea" v-model="post.description"></b-input>
+            </b-field>
+            <b-field label="URL">
+                <b-input v-model="post.URL" type="url"></b-input>
+            </b-field>
+            <button class="button is-success">Add Post</button>
+        </form>
+        <pre>{{ posts }}</pre>
+    </section>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
+  data: () => ({
+    post: {
+      title: '',
+      description: '',
+      url: '',
+    },
+  }),
   mounted() {
-   // this.init();
+    this.initSubreddit(this.$route.params.name);
   },
-  computed: mapState('subreddits', ['subreddits']),
-  methods: mapActions('subreddits', ['init']),
+  watch: {
+    '$route.params.name'() {
+      this.initSubreddit(this.$route.params.name);
+    },
+    subreddit() {
+      if (this.subreddit.id) {
+        this.initPosts(this.subreddit.id);
+      }
+    },
+  },
+  computed: {
+    ...mapState('subreddit', ['posts']),
+    ...mapGetters('subreddit', ['subreddit']),
+  },
+  methods: {
+    ...mapActions('subreddit', ['createPost', 'initSubreddit', 'initPosts']),
+    async onCreatePost() {
+      if (this.post.title && (this.post.description || this.post.URL)) {
+        await this.createPost(this.post);
+      }
+    },
+  },
 };
 </script>
 

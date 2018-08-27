@@ -10,7 +10,7 @@ const actions = {
     bindFirebaseRef('subreddits', db.collection('subreddits'));
   }),
 };
-0
+
 export default {
   namespaced: true,
   state,
