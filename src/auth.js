@@ -7,7 +7,9 @@ firebase.auth()
   .onAuthStateChanged((user) => {
     if (user) {
       if (user.user) {
+        /* eslint-disable */
         user = user.user;
+        /* eslint-enable */
       }
 
       const setUser = {
