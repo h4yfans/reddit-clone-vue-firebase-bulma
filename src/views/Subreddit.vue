@@ -1,6 +1,6 @@
 <template>
     <section>
-        <button @click="showForm = !showForm" class="button is-primary">Toggle Form</button>
+        <button @click="showForm = !showForm" v-if="isLoggedIn" class="button is-primary">Toggle Form</button>
         <form v-if="showForm" @submit.prevent="onCreatePost()">
             <b-field label="Title">
                 <b-input v-model="post.title" required></b-input>
@@ -19,7 +19,7 @@
             </b-field>
         </form>
         <div class="posts columns is-multiline is-4 " >
-            <div class="column is-4" v-for="post in filteredPosts" :key="post.id">
+            <div class="column is-4" v-for="(post,index) in filteredPosts" :key="post.id">
                 <div class="card">
                     <div class="card-image" v-if="isImage(post.url)">
                         <figure class="image">
@@ -48,7 +48,20 @@
                         <div class="content">
                             {{ post.description }}
                             <br>
-                            <time datetime="2016-1-1">{{post.created_at}}</time>
+                            <time>{{getCreated(index)}}</time>
+                            <br>
+                            <button
+                                    @click="deletePost(post.id)"
+                                    v-if="user && user.id == post.user_id"
+                                    class="button is-danger">
+                                Delete Post
+                            </button>
+                            <!--<router-link :to="{name: 'post',
+                            params: {
+                                name: $route.params.name,
+                                post_id: post.id
+                             }}" class="button is-primary">Add Post</router-link>-->
+
                         </div>
                     </div>
                 </div>
@@ -76,7 +89,7 @@ export default {
     this.initSubreddit(this.$route.params.name);
   },
   watch: {
-    '$route.params.name'() {
+    '$route.params.name': function () {
       this.initSubreddit(this.$route.params.name);
     },
     subreddit() {
@@ -87,6 +100,7 @@ export default {
   },
   computed: {
     ...mapState('subreddit', ['posts']),
+    ...mapState('auth', ['isLoggedIn', 'user']),
     ...mapGetters({
       subreddit: 'subreddit/subreddit',
       usersById: 'users/userById',
@@ -114,7 +128,7 @@ export default {
     isImage(url) {
       return url.match(/(png|jpg|jpeg|gif|svg)$/);
     },
-    ...mapActions('subreddit', ['createPost', 'initSubreddit', 'initPosts']),
+    ...mapActions('subreddit', ['createPost', 'initSubreddit', 'initPosts', 'deletePost']),
     ...mapActions('users', { initUser: 'init' }),
     async onCreatePost() {
       if (this.post.title && (this.post.description || this.post.URL)) {

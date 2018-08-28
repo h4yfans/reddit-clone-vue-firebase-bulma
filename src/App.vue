@@ -3,7 +3,7 @@
         <nav class="navbar is-black" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="#">
-                    Hiper-Optik Basküler Link Paşlaşgılacı
+                    Hiper-Optik Vasküler Link Paşlaşgılacı
                 </a>
             </div>
             <div class="navbar-end">
